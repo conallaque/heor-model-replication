@@ -140,7 +140,7 @@ def test_lamivudine_cost_expires_with_its_effect():
         assert combo[t, 0] == pytest.approx(mono[t, 0])
 
 
-def test_the_dead_are_not_billed(results):
+def test_the_dead_are_not_billed():
     """State D carries no health cost and no drug cost, in either arm."""
     for strategy in model.STRATEGIES:
         assert np.all(model.state_costs(strategy)[:, 3] == 0.0)

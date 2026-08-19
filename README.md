@@ -17,7 +17,7 @@ Everything that backs the claim below runs on a clean clone with no setup.
 Sick-Sicker, time-independent — Alarid-Escudero et al., Med Decis Making 2023;43(1):3-20
 
 Strategy                  Cost (pub)   Cost (ours)    QALYs (pub)   QALYs (ours)   ICER (pub)  ICER (ours)
-─────────────────────────────────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Standard of care             151,580       151,580         20.711         20.711       — (ND)       — (ND)  ✓
 Strategy A                   284,805       284,805         21.499         21.499        — (D)        — (D)  ✓
 Strategy B                   259,100       259,100         22.184         22.184       72,988       72,988  ✓
@@ -25,6 +25,8 @@ Strategy AB                  378,875       378,875         23.137         23.137
 
 Sick-Sicker, age-dependent — Alarid-Escudero et al., Med Decis Making 2023;43(1):21-41
 
+Strategy                  Cost (pub)   Cost (ours)    QALYs (pub)   QALYs (ours)   ICER (pub)  ICER (ours)
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Standard of care             116,374       116,374         18.879         18.879       — (ND)       — (ND)  ✓
 Strategy A                   218,789       218,789         19.636         19.636        — (D)        — (D)  ✓
 Strategy B                   202,536       202,536         20.199         20.199       65,288       65,288  ✓
@@ -33,7 +35,7 @@ Strategy AB                  296,300       296,300         21.097         21.097
 HIV combination therapy — Briggs et al., DMHEE (2006), via the heemod R package
 
 Strategy                    Cost (pub)     Cost (ours)   Life-years (pub)  Life-years (ours)   ICER (pub)  ICER (ours)
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Monotherapy                  44,663.45       44,663.45           7.991207           7.991207       — (ND)       — (ND)  ✓
 Combination therapy          50,601.65       50,601.65           8.937389           8.937389    6,275.956    6,275.956  ✓
 ```

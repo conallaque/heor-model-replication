@@ -26,11 +26,14 @@ REPLICATIONS = (
     ("replications.heemod_dmhee_hiv", "HIV combination therapy (DMHEE)"),
 )
 
+#: Minimum block width. Each table widens past this when its columns need it —
+#: heemod prints costs to the penny and life-years to six figures, so its block
+#: is wider than the DARTH ones.
 W = 104
 
 
-def _rule(char: str = "─") -> str:
-    return char * W
+def _rule(char: str = "─", width: int = W) -> str:
+    return char * width
 
 
 def compare(module_name: str, title: str) -> Tuple[List[str], bool]:
@@ -60,11 +63,12 @@ def compare(module_name: str, title: str) -> Tuple[List[str], bool]:
     e_dp, c_dp, i_dp = places(e_tol), places(tol["cost"]), places(tol["icer"])
     cw, ew = 14 + c_dp, max(15, len(label) + 9)
 
-    out = [_rule("═"), title, ref.CITATION, ""]
     header = (f"{'Strategy':<22}{'Cost (pub)':>{cw}}{'Cost (ours)':>{cw}}"
               f"{label + ' (pub)':>{ew}}{label + ' (ours)':>{ew}}"
               f"{'ICER (pub)':>13}{'ICER (ours)':>13}")
-    out += [header, _rule()]
+    width = max(W, len(header) + 3)          # + room for the trailing ✓ / ✗
+
+    out = [_rule("═", width), title, ref.CITATION, "", header, _rule("─", width)]
 
     all_ok = True
     for name in model.STRATEGIES:
