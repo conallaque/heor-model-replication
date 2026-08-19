@@ -41,6 +41,32 @@ def test_no_correction_is_all_ones():
     assert np.all(gen_wcc(10, "none") == 1.0)
 
 
+def test_beginning_and_end_drop_the_row_that_has_no_cycle():
+    """heemod's two uncorrected conventions.
+
+    A trace of ``n + 1`` rows spans only ``n`` cycles, so exactly one row has to
+    be dropped: counting at the start of each cycle discards the final row,
+    counting at the end discards the initial one.
+    """
+    beginning, end = gen_wcc(10, "beginning"), gen_wcc(10, "end")
+    assert beginning[10] == 0.0 and np.all(beginning[:10] == 1.0)
+    assert end[0] == 0.0 and np.all(end[1:] == 1.0)
+    assert beginning.sum() == end.sum() == 10.0
+
+
+def test_half_cycle_is_exactly_the_average_of_beginning_and_end():
+    """The identity that explains what the half-cycle "correction" corrects.
+
+    People enter states continuously through the cycle, so counting them all at
+    the start overstates and counting them all at the end understates. Averaging
+    the two conventions *is* the half-cycle correction — not an approximation of
+    it.
+    """
+    for n in (1, 2, 10, 75):
+        expected = (gen_wcc(n, "beginning") + gen_wcc(n, "end")) / 2
+        assert np.allclose(gen_wcc(n, "half-cycle"), expected)
+
+
 def test_unknown_correction_method_is_rejected():
     with pytest.raises(ValueError, match="method must be one of"):
         gen_wcc(10, "trapezoid")
@@ -60,10 +86,16 @@ def test_the_correction_actually_changes_the_answer():
     kw = dict(P=P, v_init=[1.0, 0.0], n_cycles=20,
               state_costs=np.array([100.0, 0.0]),
               state_utils=np.array([1.0, 0.0]))
-    simpson = run_cstm(**kw, wcc="Simpson1/3").total_cost
-    half = run_cstm(**kw, wcc="half-cycle").total_cost
-    none = run_cstm(**kw, wcc="none").total_cost
-    assert simpson != half != none
+    totals = {m: run_cstm(**kw, wcc=m).total_cost
+              for m in ("Simpson1/3", "half-cycle", "beginning", "end", "none")}
+    assert len(set(totals.values())) == len(totals), \
+        f"two correction methods produced identical totals: {totals}"
+
+    # And the disagreement is material, not a rounding artefact: counting at the
+    # start of the cycle vs the end differs by more than a percent here, which is
+    # wider than many published cost-effectiveness conclusions.
+    spread = (max(totals.values()) - min(totals.values())) / min(totals.values())
+    assert spread > 0.01
 
 
 # ── rate / probability conversion ─────────────────────────────────────────────

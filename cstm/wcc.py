@@ -20,8 +20,21 @@ replication can select the *source's* convention:
 * ``"Simpson1/3"`` and ``"half-cycle"`` follow ``darthtools::gen_wcc``, as
   published in ``R/Functions.R`` of DARTH-git/cohort-modeling-tutorial-intro
   (fetched 2026-08-19). See :func:`gen_wcc` for the verbatim R.
-* ``"none"`` is the no-correction case, kept because some published models
-  genuinely do not correct and reproducing them requires not correcting either.
+* ``"beginning"`` and ``"end"`` are the *uncorrected* counting conventions —
+  value the cohort as it stands at the start of each cycle, or as it stands after
+  the transition. They correspond to ``heemod::run_model(method = ...)``, and
+  plenty of published models use one of them rather than correcting at all.
+* ``"none"`` weights every trace row equally. This is not the same as
+  ``"beginning"`` or ``"end"``: it counts ``n_cycles + 1`` rows where the model
+  ran ``n_cycles`` transitions, so it double-counts a cycle's worth of payoff.
+  Kept only for diagnostics.
+
+Two facts worth holding onto, both pinned by tests. The half-cycle correction is
+exactly the average of ``"beginning"`` and ``"end"`` — that is what "correction"
+means here, splitting the difference between counting people before and after
+they move. And the choice is worth real money: on the models in this repository
+the methods disagree by several percent, which is the width of many published
+cost-effectiveness conclusions.
 
 Reference: Elbasha & Chhatwal (2016), *Health Economics* 25(12):1447-1458,
 "Theoretical foundations and practical applications of within-cycle correction
@@ -32,7 +45,7 @@ from __future__ import annotations
 
 import numpy as np
 
-METHODS = ("Simpson1/3", "half-cycle", "none")
+METHODS = ("Simpson1/3", "half-cycle", "beginning", "end", "none")
 
 
 def gen_wcc(n_cycles: int, method: str = "Simpson1/3") -> np.ndarray:
@@ -77,6 +90,18 @@ def gen_wcc(n_cycles: int, method: str = "Simpson1/3") -> np.ndarray:
     if method == "half-cycle":
         v = np.ones(n + 1)
         v[0] = v[n] = 0.5
+        return v
+
+    # heemod::run_model(method = "beginning" | "end"). Not in darthtools; these
+    # are the two uncorrected conventions the half-cycle correction averages.
+    if method == "beginning":
+        v = np.ones(n + 1)
+        v[n] = 0.0                      # the final row is a start no cycle has
+        return v
+
+    if method == "end":
+        v = np.ones(n + 1)
+        v[0] = 0.0                      # the initial row is an end no cycle has
         return v
 
     # Simpson's 1/3. R's v_cycles = 1..n+1 maps to python index i -> i + 1.

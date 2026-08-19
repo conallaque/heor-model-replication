@@ -13,16 +13,20 @@ from __future__ import annotations
 
 import importlib
 import sys
+
 from typing import List, Tuple
+
+import numpy as np
 
 from cstm.icer import calculate_icers
 
 REPLICATIONS = (
     ("replications.darth2023_intro", "Sick-Sicker, time-independent"),
     ("replications.darth2023_timedep", "Sick-Sicker, age-dependent"),
+    ("replications.heemod_dmhee_hiv", "HIV combination therapy (DMHEE)"),
 )
 
-W = 92
+W = 104
 
 
 def _rule(char: str = "─") -> str:
@@ -40,30 +44,48 @@ def compare(module_name: str, title: str) -> Tuple[List[str], bool]:
         [r.total_qaly for r in ordered],
         [r.strategy for r in ordered])}
 
+    # Each replication declares what its source calls the effect measure (QALYs,
+    # life-years) and to what precision it printed each column. Comparing on the
+    # source's own terms is the whole discipline of the repository, so the report
+    # reads those rather than assuming.
+    key = getattr(ref, "EFFECT_KEY", "qaly")
+    label = getattr(ref, "EFFECT_LABEL", "QALYs")
+    tol = ref.TOLERANCE
+    e_tol = tol.get(key, tol.get("qaly", 5e-4))
+
+    def places(t: float) -> int:
+        """Decimals to print, from the precision the source's tolerance implies."""
+        return max(0, -int(round(np.log10(t * 2)))) if t > 0 else 6
+
+    e_dp, c_dp, i_dp = places(e_tol), places(tol["cost"]), places(tol["icer"])
+    cw, ew = 14 + c_dp, max(15, len(label) + 9)
+
     out = [_rule("═"), title, ref.CITATION, ""]
-    header = (f"{'Strategy':<18}{'Cost (pub)':>12}{'Cost (ours)':>13}"
-              f"{'QALY (pub)':>12}{'QALY (ours)':>13}{'ICER (pub)':>12}"
-              f"{'ICER (ours)':>13}")
+    header = (f"{'Strategy':<22}{'Cost (pub)':>{cw}}{'Cost (ours)':>{cw}}"
+              f"{label + ' (pub)':>{ew}}{label + ' (ours)':>{ew}}"
+              f"{'ICER (pub)':>13}{'ICER (ours)':>13}")
     out += [header, _rule()]
 
     all_ok = True
     for name in model.STRATEGIES:
         pub, got = ref.PUBLISHED[name], rows[name]
-        cost_ok = round(got.cost) == pub["cost"]
-        qaly_ok = abs(round(got.effect, 3) - pub["qaly"]) <= ref.TOLERANCE["qaly"]
+        cost_ok = abs(got.cost - pub["cost"]) <= tol["cost"]
+        eff_ok = abs(got.effect - pub[key]) <= e_tol
         if pub["icer"] is None:
             icer_ok = got.icer is None
             icer_pub, icer_got = f"— ({pub['status']})", f"— ({got.status})"
         else:
             icer_ok = (got.icer is not None
-                       and abs(round(got.icer) - pub["icer"]) <= ref.TOLERANCE["icer"])
-            icer_pub, icer_got = f"{pub['icer']:,.0f}", f"{got.icer:,.0f}"
-        all_ok &= cost_ok and qaly_ok and icer_ok
+                       and abs(got.icer - pub["icer"]) <= tol["icer"])
+            icer_pub = f"{pub['icer']:,.{i_dp}f}"
+            icer_got = f"{got.icer:,.{i_dp}f}"
+        all_ok &= cost_ok and eff_ok and icer_ok
 
-        mark = "✓" if (cost_ok and qaly_ok and icer_ok) else "✗"
-        out.append(f"{name:<18}{pub['cost']:>12,}{got.cost:>13,.0f}"
-                   f"{pub['qaly']:>12.3f}{got.effect:>13.3f}"
-                   f"{icer_pub:>12}{icer_got:>13}  {mark}")
+        mark = "✓" if (cost_ok and eff_ok and icer_ok) else "✗"
+        out.append(f"{name:<22}{pub['cost']:>{cw},.{c_dp}f}"
+                   f"{got.cost:>{cw},.{c_dp}f}"
+                   f"{pub[key]:>{ew}.{e_dp}f}{got.effect:>{ew}.{e_dp}f}"
+                   f"{icer_pub:>13}{icer_got:>13}  {mark}")
 
     out += ["", f"Match: {'ALL VALUES' if all_ok else 'INCOMPLETE — see failures above'}",
             f"Source of published values: {ref.SOURCES['results_table']['url']}",

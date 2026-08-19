@@ -13,6 +13,9 @@ Every number below was read from the open-access full text on PubMed Central on
 
 from __future__ import annotations
 
+EFFECT_KEY = "qaly"
+EFFECT_LABEL = "QALYs"
+
 CITATION = (
     "Alarid-Escudero F, Krijkamp E, Enns EA, Yang A, Hunink MGM, "
     "Pechlivanoglou P, Jalal H. An Introductory Tutorial on Cohort "

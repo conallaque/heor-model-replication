@@ -16,6 +16,9 @@ solver isn't quietly fitted to one of them.
 
 from __future__ import annotations
 
+EFFECT_KEY = "qaly"
+EFFECT_LABEL = "QALYs"
+
 CITATION = (
     "Alarid-Escudero F, Krijkamp E, Enns EA, Yang A, Hunink MGM, "
     "Pechlivanoglou P, Jalal H. A Tutorial on Time-Dependent Cohort "
