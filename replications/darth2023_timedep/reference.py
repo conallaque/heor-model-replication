@@ -73,6 +73,28 @@ RESULTS_QUOTE = (
     "followed by Strategy AB."
 )
 
+#: Same discrepancy as the introductory paper — see that module for the full
+#: write-up. Recorded here too so each replication stands alone.
+DISCREPANCIES = {
+    "c_trtB": {
+        "printed_in_paper": 12_000,
+        "used_in_code": 13_000,
+        "reproduces_results": 13_000,
+        "where_paper": "Table 2, 'Cost of Treatment B, additional to "
+                       "state-specific health care costs'",
+        "where_code": "analysis/cSTM_time_dep_simulation.R, `c_trtB <- 13000`",
+        "note": (
+            "At 12000, Strategy B costs $194,723 against a published $202,536 "
+            "and its ICER falls to $59,367 against a published $65,288. 13000 "
+            "reproduces Table 3 exactly, so the results follow the code and the "
+            "parameter table is the outlier."
+        ),
+        "paper_table_retrieved": "2026-08-19 (automated extraction of the PMC "
+                                 "full text; worth a human eye on the PDF before "
+                                 "citing this in writing)",
+    },
+}
+
 TOLERANCE = {
     "cost": 1.0,
     "qaly": 0.0005,

@@ -71,12 +71,29 @@ def compare(module_name: str, title: str) -> Tuple[List[str], bool]:
     return out, all_ok
 
 
+def discrepancies() -> List[str]:
+    """Surface anything the replication found that the papers get wrong."""
+    out = [_rule("═"), "Discrepancies found by the replication", ""]
+    for module_name, title in REPLICATIONS:
+        ref = importlib.import_module(f"{module_name}.reference")
+        for param, rec in getattr(ref, "DISCREPANCIES", {}).items():
+            out.append(
+                f"  {title}: {param} — paper prints "
+                f"${rec['printed_in_paper']:,}, authors' code uses "
+                f"${rec['used_in_code']:,}; only ${rec['reproduces_results']:,} "
+                f"reproduces the published results.")
+    out += ["", "  See README 'What the replication found' and "
+                "tests/test_discrepancies.py.", ""]
+    return out
+
+
 def main() -> int:
     lines, ok = [], True
     for module_name, title in REPLICATIONS:
         block, block_ok = compare(module_name, title)
         lines += block
         ok &= block_ok
+    lines += discrepancies()
     lines.append(_rule("═"))
     print("\n".join(lines))
     return 0 if ok else 1

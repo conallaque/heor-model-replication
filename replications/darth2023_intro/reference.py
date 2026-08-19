@@ -68,6 +68,32 @@ RESULTS_QUOTE = (
     "$72,988/QALY followed by Strategy AB with an ICER $125,764/QALY."
 )
 
+#: Discrepancies found *by* the replication — the point of doing one.
+DISCREPANCIES = {
+    "c_trtB": {
+        "printed_in_paper": 12_000,
+        "used_in_code": 13_000,
+        "reproduces_results": 13_000,
+        "where_paper": "Table 2, 'Cost of Treatment B, additional to "
+                       "state-specific health care costs'",
+        "where_code": "analysis/cSTM_time_indep.R, `c_trtB <- 13000`",
+        "note": (
+            "The paper's parameter table prints $12,000 for treatment B; the "
+            "authors' analysis script uses 13000. Only 13000 reproduces the "
+            "paper's own results table — at 12000, Strategy B costs $249,119 "
+            "against a published $259,100, and its ICER falls to $66,212 against "
+            "a published $72,988. So the results are internally consistent with "
+            "the code, and the parameter table is where the error is. The same "
+            "mismatch appears in the companion time-dependent paper, which "
+            "suggests one shared table rather than two independent typos. "
+            "Pinned by test_published_parameter_table_does_not_reproduce_results."
+        ),
+        "paper_table_retrieved": "2026-08-19 (automated extraction of the PMC "
+                                 "full text; worth a human eye on the PDF before "
+                                 "citing this in writing)",
+    },
+}
+
 #: Reporting precision of the source, which is the honest tolerance to hold the
 #: replication to. Costs printed to the dollar, QALYs to 3 dp.
 TOLERANCE = {

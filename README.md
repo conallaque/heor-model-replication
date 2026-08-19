@@ -5,9 +5,13 @@ parameters in a general-purpose Python solver, reproducing **every printed cost,
 QALY, ICER and dominance verdict exactly**.
 
 ```bash
-pip install -r requirements.txt && pytest -q      # 77 passed
+pip install -r requirements.txt && pytest -q      # 80 passed, 3 skipped
 python3 report.py                                 # the table below, live
 ```
+
+The 3 skips are the optional cross-check against the sibling engine this solver
+generalises — see [Verifying the solver itself](#verifying-the-solver-itself).
+Everything that backs the claim below runs on a clean clone with no setup.
 
 ```
 Sick-Sicker, time-independent — Alarid-Escudero et al., Med Decis Making 2023;43(1):3-20
@@ -44,13 +48,16 @@ Strategy AB            296,300      296,300      21.097       21.097     104,461
    reading prose.
 4. **Where the numbers came from:** every published value carries its URL and
    retrieval date in `reference.py`. None is recalled from memory or inferred.
-5. **Authorship, plainly:** the health-economics modelling, methodological
+5. **It found something.** Both papers' parameter tables print a cost that does
+   not reproduce their own results — see
+   [What the replication found](#what-the-replication-found).
+6. **Authorship, plainly:** the health-economics modelling, methodological
    decisions and validation design are mine; the software implementation was
    largely AI-generated under my direction and review.
 
-Companion to the [HEOR Toolkit](https://github.com/conallaque/heor-toolkit) and
-[GenomeLens](https://github.com/conallaque/genomelens). Those build models; this
-one checks that the machinery agrees with the literature.
+Companion to [GenomeLens](https://github.com/conallaque/genomelens) and to a
+sibling HEOR toolkit (not currently public). Those build models; this one checks
+that the machinery agrees with the literature.
 
 ---
 
@@ -118,6 +125,42 @@ asks only for the correct direction and order of magnitude against published
 ICERs. That check answers "is the engine sane?"; this repository answers "does it
 reproduce the literature?"
 
+## What the replication found
+
+Both papers' parameter tables print **$12,000** as the annual cost of treatment
+B. Both of the authors' analysis scripts use **$13,000**. Only $13,000
+reproduces the papers' own published results:
+
+| | Strategy B cost | ICER |
+|---|---|---|
+| Published (intro, Table 5) | $259,100 | $72,988 |
+| Replication at `c_trtB = 13,000` (the code) | **$259,100** ✓ | **$72,988** ✓ |
+| Replication at `c_trtB = 12,000` (the table) | $249,119 ✗ | $66,212 ✗ |
+| Published (time-dependent, Table 3) | $202,536 | $65,288 |
+| Replication at `c_trtB = 13,000` | **$202,536** ✓ | **$65,288** ✓ |
+| Replication at `c_trtB = 12,000` | $194,723 ✗ | $59,367 ✗ |
+
+So the results follow the code, and the printed parameter table is the outlier.
+The same mismatch appears in both papers, which points to one shared table rather
+than two independent typos.
+
+This is minor and does not affect the tutorials' conclusions. It is worth
+recording anyway, for two reasons. It is the class of thing replication exists to
+catch — a reader who trusted the parameter table and rebuilt the model would miss
+the published ICER by 9% with no indication of why. And it is a reminder that
+"the paper says X" and "the paper's results were produced by X" are different
+claims.
+
+Both directions are asserted in [`tests/test_discrepancies.py`](tests/test_discrepancies.py):
+the code value reproduces the results, and the printed value provably does not.
+If the second assertion ever fails, this section is wrong and gets retracted.
+
+> The papers' parameter tables were read by automated extraction of the PMC full
+> text on 2026-08-19. That is good enough to justify the test; anyone citing this
+> in writing should put a human eye on the PDFs first. The `13,000` side needs no
+> such caveat — it is in the authors' published source code, and it reproduces
+> eight printed values exactly.
+
 ## Provenance
 
 Replication is worthless if the target numbers are wrong, so no value enters this
@@ -136,18 +179,26 @@ to predict.
 
 ## Verifying the solver itself
 
-`tests/test_solver_equivalence.py` checks the general solver against the 3-state
-Markov engine it generalises (in the sibling [HEOR
-Toolkit](https://github.com/conallaque/heor-toolkit)), reproducing its totals to
-the full precision that engine reports. That separates the two failure modes: if
-the equivalence test is green and a replication still misses, the fault is in the
-replication's parameters, not the solver.
+Two checks stand behind the solver independently of any paper.
 
-The test skips cleanly when the toolkit is absent. To run it:
+**It still agrees with the engine it generalises.**
+[`tests/test_solver_equivalence.py`](tests/test_solver_equivalence.py) runs the
+solver against the 3-state Markov engine it grew out of (a sibling HEOR toolkit,
+not currently public) and reproduces its totals to the full precision that engine
+reports. That separates the two failure modes: if the equivalence check is green
+and a replication still misses, the fault is in the replication's parameters, not
+the solver. These are the 3 tests that skip on a clean clone; to run them, point
+the suite at a directory containing `markov_model.py`:
 
 ```bash
 HEOR_TOOLKIT_PATH=/path/to/heor-toolkit python3 -m pytest -q
 ```
+
+**The two payoff conventions collapse into each other when they should.** Given
+only state rewards, the transition-array formulation is provably identical to
+`trace @ rewards`. That identity is a sharp test of the array's cycle indexing —
+an off-by-one still produces plausible totals but breaks the identity at once. It
+caught exactly that bug during development, before either replication was run.
 
 ## Scope and limits
 
