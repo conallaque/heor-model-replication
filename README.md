@@ -66,6 +66,25 @@ Companion to [GenomeLens](https://github.com/conallaque/genomelens) and to a
 sibling HEOR toolkit (not currently public). Those build models; this one checks
 that the machinery agrees with the literature.
 
+### Where to look
+
+```
+cstm/                    the solver — a general N-state cohort model, ~500 lines
+replications/            one directory per published model
+  darth2023_intro/         model.py = the parameters · reference.py = the targets
+  darth2023_timedep/
+  heemod_dmhee_hiv/
+tests/                   the claim, as assertions — this is the proof
+data/                    the one input file, with its provenance
+report.py                run this: prints published vs. computed, exits 1 on a miss
+```
+
+**Reading it in five minutes:** [`report.py`](report.py) output is at the top of
+this page. Then any one `reference.py` — say
+[`heemod_dmhee_hiv/reference.py`](replications/heemod_dmhee_hiv/reference.py) —
+shows what a target looks like and where it came from. Then
+[`cstm/solver.py`](cstm/solver.py) is the engine all three run on.
+
 ---
 
 ## Why replication is the right test
