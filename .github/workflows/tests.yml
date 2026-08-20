@@ -1,0 +1,45 @@
+name: tests
+
+# The repository's claim is that these models reproduce their published results.
+# Running that claim in CI is the point: a green check here means the published
+# costs, effects, ICERs and dominance verdicts were reproduced on a clean
+# machine, by a third party, without anyone taking the README's word for it.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Oldest supported and current, so the replications are shown not to
+        # depend on a particular interpreter's float or dict behaviour.
+        python-version: ["3.10", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run the test suite
+        # 3 tests skip here by design — they cross-check against a sibling
+        # toolkit that is not public. Everything backing the replication claim
+        # runs with no setup.
+        run: pytest -q
+
+      - name: Reproduce every published value
+        # report.py exits non-zero if any computed value misses its published
+        # target, so this step is an end-to-end assertion, not just output.
+        run: python report.py
