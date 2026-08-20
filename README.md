@@ -233,6 +233,14 @@ Parameters live in `model.py` and targets live in `reference.py`, deliberately
 kept apart — so no parameter can quietly drift toward the number it's supposed to
 predict.
 
+**No personal health data, enforced rather than promised.** This repo shares an
+author with a genomics tool that reads real genome files, so
+[`tests/test_no_genomic_data.py`](tests/test_no_genomic_data.py) scans every
+tracked file for anything shaped like a genotype record — rsIDs, VCF headers,
+consumer-export columns, raw base runs — and CI fails the build if it finds one.
+The only data file here is an aggregate US life table, and a test asserts that's
+what it is.
+
 ## Verifying the solver itself
 
 Three checks stand behind the solver independently of any single paper.

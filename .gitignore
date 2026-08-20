@@ -7,3 +7,32 @@ __pycache__/
 *.pdf
 .venv/
 venv/
+
+# ── Never commit genomic data ─────────────────────────────────────────────────
+#
+# This project is health *economics*; no personal genome file belongs in it. The
+# rules below are precautionary, not a response to an incident — no genomic data
+# has ever been committed here, and tests/test_no_genomic_data.py proves it on
+# every push.
+#
+# Genome file formats. Deliberately no filename or sample-ID patterns here: a
+# personal identifier does not belong in a public file, and the extension rules
+# below plus the content scan in tests/test_no_genomic_data.py catch a raw export
+# whatever it happens to be called.
+*.vcf
+*.vcf.gz
+*.bam
+*.bai
+*.cram
+*.fastq
+*.fastq.gz
+*.gvcf
+*.23andme
+
+# Tabular data is opt-in, not opt-out. Raw genotype exports are plain .csv/.tsv/
+# .txt, so ignore all of them and whitelist only the files this project needs.
+*.csv
+*.tsv
+*.txt
+!requirements.txt
+!data/LifeTable_USA_Mx_2015.csv
