@@ -280,8 +280,11 @@ into one framework instead of two special cases.
 ## Licence
 
 **All rights reserved.** Read it, clone it, run the tests — evaluating the work is
-exactly what it's here for. Commercial use, redistribution, and derivative works
-need written permission. Full terms in [`LICENSE`](LICENSE).
+exactly what it's here for, and that holds whether you're doing it for yourself or
+for an employer assessing me. What the licence doesn't do is let an organisation
+put the code to work: it's a grant to people reading, not to organisations
+building. Commercial use, redistribution, and derivative works need written
+permission. Full terms in [`LICENSE`](LICENSE).
 
 The replicated models and their published parameters belong to their authors and
 are cited in full in each `reference.py`; this repo contains an independent

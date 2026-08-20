@@ -6,14 +6,29 @@ stated below, no licence — express or implied — is granted to use it.
 
 PERMITTED WITHOUT FURTHER PERMISSION
 
-  * Reading and reviewing the source code and documentation.
+  Any individual person may:
 
-  * Cloning the repository and running its test suite and `report.py`, for the
-    purpose of evaluating the author's work — for example in the course of
-    hiring, academic review, or personal study.
+  * Read and review the source code and documentation.
+
+  * Clone the repository and run its test suite and `report.py`, in order to
+    evaluate the author's work or to study the methods it implements.
+
+  This permission holds whether you are doing so for yourself or on behalf of a
+  prospective employer, client, or academic institution assessing the author.
+  Reading this repository to form a judgement about its author is the reason it
+  exists, and no organisation needs permission for that.
+
+  What the permission does NOT do is let an organisation put this code to work.
+  It is a grant to people reading, not to organisations building. Evaluating the
+  author is permitted; using the code is not — see below.
 
 
 NOT PERMITTED WITHOUT THE AUTHOR'S PRIOR WRITTEN PERMISSION
+
+  * Any use by, for, or on behalf of a company, firm, practice, client or other
+    organisation, beyond the reading and evaluation permitted above — whether or
+    not a fee is charged, and whether or not the person doing it is acting on
+    their own initiative.
 
   * Any commercial use. This includes, without limitation, use in or in support
     of paid consulting, client deliverables, internal business tooling, or any
