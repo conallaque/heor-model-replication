@@ -193,9 +193,21 @@ $13,000 reproduces the papers' own published results:
 | Replication at `c_trtB = 13,000` | **$202,536** ✓ | **$65,288** ✓ |
 | Replication at `c_trtB = 12,000` | $194,723 ✗ | $59,367 ✗ |
 
-So the results follow the code, and the printed table is the outlier. The same
-mismatch shows up in both papers, which points to one shared table rather than two
-independent typos.
+So the results follow the code, and the printed table is the outlier.
+
+**The table contradicts itself, which is what makes this a typo rather than a
+modelling choice.** The PSA distribution printed in the *same row* as treatment
+B's base case is `gamma(86.2, 150.8)`. A gamma mean is shape x scale:
+86.2 x 150.8 = **$12,999** — the code's value, not the $12,000 printed beside it.
+Treatment A's row is the control and it checks out: `gamma(73.5, 163.3)` has mean
+$12,003, matching its printed $12,000. One row disagrees with itself; the other
+doesn't.
+
+The two papers differ in one detail worth stating precisely. The introductory
+paper's body text says treatment B *"costs $13,000 per year"* — so that paper
+contradicts its own table. The time-dependent paper's prose says $12,000, so
+there the narrative and the table agree with each other and disagree with the
+code that produced the published results.
 
 This is minor and doesn't affect the tutorials' conclusions. I'm recording it
 anyway for two reasons. It's exactly the class of thing replication exists to
@@ -204,16 +216,18 @@ the published ICER by 9% with no indication of why. And it's a reminder that "th
 paper says X" and "the paper's results were produced by X" are two different
 claims.
 
-Both directions are asserted in
+Every direction is asserted in
 [`tests/test_discrepancies.py`](tests/test_discrepancies.py): the code value
-reproduces the results, and the printed value provably doesn't. If that second
-assertion ever fails, this section is wrong and I'll retract it.
+reproduces the results, the printed value provably doesn't, and the table's own
+distribution parameters imply the code's value. If any of those ever fails, this
+section is wrong and I'll retract it.
 
-> The parameter tables were read by automated extraction of the PMC full text on
-> 2026-08-19. That's good enough to justify the test, but anyone citing this in
-> writing should put a human eye on the PDFs first. The $13,000 side needs no such
-> caveat — it's in the authors' published source code, and it reproduces eight
-> printed values exactly.
+> **Provenance of the table readings.** Verified 2026-08-19 against the authors'
+> own LaTeX manuscript sources — `manuscript/cSTM_Tutorial_Intro.tex` and
+> `cSTM_Tutorial_TimeDep.tex` in their public repositories — which is where the
+> typeset tables are generated from, rather than text scraped out of a rendered
+> copy. The $13,000 side is in their published analysis scripts and reproduces
+> eight printed values exactly.
 
 ## Provenance
 

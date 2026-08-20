@@ -99,15 +99,25 @@ def compare(module_name: str, title: str) -> Tuple[List[str], bool]:
 
 def discrepancies() -> List[str]:
     """Surface anything the replication found that the papers get wrong."""
-    out = [_rule("═"), "Discrepancies found by the replication", ""]
+    out = [_rule("\u2550"), "Discrepancies found by the replication", ""]
     for module_name, title in REPLICATIONS:
         ref = importlib.import_module(f"{module_name}.reference")
         for param, rec in getattr(ref, "DISCREPANCIES", {}).items():
             out.append(
-                f"  {title}: {param} — paper prints "
-                f"${rec['printed_in_paper']:,}, authors' code uses "
-                f"${rec['used_in_code']:,}; only ${rec['reproduces_results']:,} "
-                f"reproduces the published results.")
+                f"  {title}"
+            )
+            out.append(
+                f"    {param}: parameter table prints "
+                f"${rec['printed_in_paper_table']:,}, authors' code uses "
+                f"${rec['used_in_code']:,}; only "
+                f"${rec['reproduces_results']:,} reproduces the published "
+                f"results.")
+            implied = rec.get("implied_by_table_psa_distribution")
+            if implied:
+                out.append(
+                    f"    the PSA distribution printed in the same table row "
+                    f"implies a mean of ${implied:,} \u2014 i.e. the table "
+                    f"disagrees with itself.")
     out += ["", "  See README 'What the replication found' and "
                 "tests/test_discrepancies.py.", ""]
     return out

@@ -72,28 +72,42 @@ RESULTS_QUOTE = (
 )
 
 #: Discrepancies found *by* the replication — the point of doing one.
+#:
+#: Verified 2026-08-19 against the authors' own LaTeX manuscript source
+#: (manuscript/cSTM_Tutorial_Intro.tex), not by extracting text from the
+#: rendered paper. Four statements of this parameter exist; three agree and one
+#: does not.
 DISCREPANCIES = {
     "c_trtB": {
-        "printed_in_paper": 12_000,
+        "printed_in_paper_table": 12_000,
+        "implied_by_table_psa_distribution": 12_999,   # gamma(86.2, 150.8)
+        "stated_in_paper_prose": 13_000,
         "used_in_code": 13_000,
         "reproduces_results": 13_000,
-        "where_paper": "Table 2, 'Cost of Treatment B, additional to "
-                       "state-specific health care costs'",
+        "where_paper": "Table 2, row 'Cost of treatment B, additional to "
+                       "state-specific health care costs' — base-case column",
+        "where_prose": "Model description: 'Strategy B ... costs $13,000 per "
+                       "year (c_trtB)'",
         "where_code": "analysis/cSTM_time_indep.R, `c_trtB <- 13000`",
         "note": (
-            "The paper's parameter table prints $12,000 for treatment B; the "
-            "authors' analysis script uses 13000. Only 13000 reproduces the "
-            "paper's own results table — at 12000, Strategy B costs $249,119 "
-            "against a published $259,100, and its ICER falls to $66,212 against "
-            "a published $72,988. So the results are internally consistent with "
-            "the code, and the parameter table is where the error is. The same "
-            "mismatch appears in the companion time-dependent paper, which "
-            "suggests one shared table rather than two independent typos. "
-            "Pinned by test_published_parameter_table_does_not_reproduce_results."
+            "Table 2's base-case cell prints $12,000. Everything else in the "
+            "paper says $13,000: the body text states it explicitly, the "
+            "analysis script sets it, and only 13000 reproduces Table 5 (at "
+            "12000, Strategy B costs $249,119 against a published $259,100 and "
+            "its ICER falls to $66,212 against a published $72,988). "
+            "Decisively, the PSA distribution printed in the SAME table row — "
+            "gamma(86.2, 150.8) — has mean 86.2 x 150.8 = $12,999, i.e. the "
+            "table's own distribution column implies 13,000 while its "
+            "base-case column says 12,000. Treatment A's row is consistent by "
+            "contrast: gamma(73.5, 163.3) has mean $12,003, matching its "
+            "printed $12,000. So this is one wrong cell, not a modelling "
+            "choice. Pinned by tests/test_discrepancies.py."
         ),
-        "paper_table_retrieved": "2026-08-19 (automated extraction of the PMC "
-                                 "full text; worth a human eye on the PDF before "
-                                 "citing this in writing)",
+        "verified": (
+            "2026-08-19 from manuscript/cSTM_Tutorial_Intro.tex in the authors' "
+            "public repository — the typeset table's own source. Supersedes an "
+            "earlier reading taken from automated extraction of the PMC HTML."
+        ),
     },
 }
 
