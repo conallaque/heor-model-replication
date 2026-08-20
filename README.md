@@ -1,8 +1,15 @@
 # HEOR Model Replication — reproducing published cost-effectiveness models in Python
 
+[![tests](https://github.com/conallaque/heor-model-replication/actions/workflows/tests.yml/badge.svg)](https://github.com/conallaque/heor-model-replication/actions/workflows/tests.yml)
+
 Three published health-economic models, from two different modelling traditions,
 rebuilt from their published parameters in a single general-purpose Python solver
 — reproducing **every printed cost, effect, ICER and dominance verdict exactly**.
+
+That badge is the claim, not decoration. CI reruns every replication from scratch
+on Python 3.10 and 3.13, and `report.py` exits non-zero if a single published
+value is missed — so a green check means the tables below were reproduced on a
+clean machine, without anyone taking this page's word for it.
 
 ```bash
 pip install -r requirements.txt && pytest -q      # 100 passed, 3 skipped
