@@ -258,3 +258,20 @@ def test_duplicate_strategy_names_are_rejected():
 def test_mismatched_input_lengths_are_rejected():
     with pytest.raises(ValueError, match="same length"):
         calculate_icers([1, 2], [1.0], ["a", "b"])
+
+
+def test_icer_table_renders_every_strategy_and_marks_dominance():
+    """The display path report.py depends on — thin, but public and unasserted."""
+    from cstm.icer import format_icer_table
+
+    rows = calculate_icers(costs=[0, 100, 300, 400], effects=[0.0, 1.0, 2.0, 1.5],
+                           strategies=["base", "mid", "top", "loser"])
+    table = format_icer_table(rows)
+    lines = table.split("\n")
+    assert lines[0].startswith("Strategy")
+    assert set(lines[1]) == {"-"}
+    assert len(lines) == 6                              # header + rule + 4 rows
+    for name in ("base", "mid", "top", "loser"):
+        assert name in table
+    assert table.count("ND") == 3 and "  D" in table    # loser is dominated
+    assert "—" in table                                 # baseline has no ICER
