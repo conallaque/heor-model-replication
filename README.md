@@ -270,6 +270,12 @@ into one framework instead of two special cases.
 
 ## Licence
 
-MIT. The replicated models and their parameters belong to their authors and are
-cited in full; this repository contains an independent implementation, not their
-code.
+**All rights reserved.** Read it, clone it, run the tests — evaluating the work
+is exactly what it is here for. Commercial use, redistribution and derivative
+works need written permission. Full terms in [`LICENSE`](LICENSE).
+
+The replicated models and their published parameters belong to their authors and
+are cited in full in each `reference.py`; this repository contains an independent
+implementation, not their code. Third-party material redistributed here — the US
+life table — stays under its own MIT licence, unaffected by the above. See
+[`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).

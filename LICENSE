@@ -1,21 +1,54 @@
-MIT License
+Copyright (c) 2026 Conall Aque. All rights reserved.
 
-Copyright (c) 2026 Conall Aque
+This repository is published for reading, review and evaluation. Except as
+stated below, no licence — express or implied — is granted to use it.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+PERMITTED WITHOUT FURTHER PERMISSION
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+  * Reading and reviewing the source code and documentation.
+
+  * Cloning the repository and running its test suite and `report.py`, for the
+    purpose of evaluating the author's work — for example in the course of
+    hiring, academic review, or personal study.
+
+
+NOT PERMITTED WITHOUT THE AUTHOR'S PRIOR WRITTEN PERMISSION
+
+  * Any commercial use. This includes, without limitation, use in or in support
+    of paid consulting, client deliverables, internal business tooling, or any
+    product or service, whether or not this code is distributed as part of it.
+
+  * Redistribution, publication or sublicensing of this code, in whole or in
+    part, modified or unmodified.
+
+  * Creating or distributing derivative works.
+
+
+THIRD-PARTY MATERIAL
+
+  This notice covers the code and documentation authored for this repository.
+  It does NOT cover third-party material redistributed here, which remains
+  under its own licence and is not affected by the restrictions above. See
+  THIRD-PARTY-NOTICES.md.
+
+  The health-economic models replicated here are the published work of their
+  respective authors and are cited in full in each replication's
+  `reference.py`. This repository contains an independent implementation of
+  those models, not the authors' own code, and claims no rights over their
+  work.
+
+
+NO WARRANTY
+
+  This software is provided "as is", without warranty of any kind, express or
+  implied, including but not limited to the warranties of merchantability,
+  fitness for a particular purpose and non-infringement. In no event shall the
+  author be liable for any claim, damages or other liability arising from, out
+  of or in connection with the software or its use.
+
+  It is teaching and portfolio code — not a validated model for regulatory or
+  reimbursement submission, and not medical or financial advice.
+
+
+Permission enquiries: aque.c@northeastern.edu
