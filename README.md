@@ -2,23 +2,23 @@
 
 [![tests](https://github.com/conallaque/heor-model-replication/actions/workflows/tests.yml/badge.svg)](https://github.com/conallaque/heor-model-replication/actions/workflows/tests.yml)
 
-Three published health-economic models, from two different modelling traditions,
-rebuilt from their published parameters in a single general-purpose Python solver
-— reproducing **every printed cost, effect, ICER and dominance verdict exactly**.
+I rebuilt three published health-economic models from their printed parameters,
+using one general-purpose Python solver, and checked whether it reproduces every
+cost, effect, ICER, and dominance verdict the papers report. It does — exactly.
 
-That badge is the claim, not decoration. CI reruns every replication from scratch
+The badge is the claim, not decoration. CI reruns every replication from scratch
 on Python 3.10 and 3.13, and `report.py` exits non-zero if a single published
-value is missed — so a green check means the tables below were reproduced on a
-clean machine, without anyone taking this page's word for it.
+value is missed. A green check means the tables below were reproduced on a clean
+machine, so you don't have to take this page's word for it.
 
 ```bash
 pip install -r requirements.txt && pytest -q      # 100 passed, 3 skipped
 python3 report.py                                 # the tables below, live
 ```
 
-The 3 skips are the optional cross-check against the sibling engine this solver
+The 3 skips are an optional cross-check against the sibling engine this solver
 generalises — see [Verifying the solver itself](#verifying-the-solver-itself).
-Everything that backs the claim below runs on a clean clone with no setup.
+Everything backing the claim runs on a clean clone with no setup.
 
 ```
 Sick-Sicker, time-independent — Alarid-Escudero et al., Med Decis Making 2023;43(1):3-20
@@ -49,24 +49,25 @@ Combination therapy          50,601.65       50,601.65           8.937389       
 
 ---
 
-### For reviewers — the 30-second version
+## The 30-second version
 
-1. **What this is:** published health-economic models, re-implemented from their
-   parameters and checked against their printed results. Not a library wrapper —
-   the solver is written from first principles so every convention is visible.
-2. **Why it exists:** a model engine is only as credible as its agreement with
-   work that has already been refereed. This repository is the agreement, made
-   executable.
+1. **What this is.** Published health-economic models, re-implemented from their
+   parameters and checked against their printed results. It isn't a wrapper
+   around an existing library — I wrote the solver from first principles so every
+   modelling convention is visible in the code.
+2. **Why I built it.** A model engine is only as trustworthy as its agreement
+   with work that's already been through peer review. This repo is that
+   agreement, made executable.
 3. **The claim is a test, not a sentence.** `pytest` asserts the published
-   numbers. If a value drifts, the suite goes red. Nothing here is checked by
-   reading prose.
-4. **Where the numbers came from:** every published value carries its URL and
-   retrieval date in `reference.py`. None is recalled from memory or inferred.
-5. **It found something.** Two papers' parameter tables print a cost that does
-   not reproduce their own results — see
+   numbers directly. If a value drifts, the suite goes red. None of this is
+   verified by reading prose.
+4. **Where the numbers came from.** Every published value carries its URL and
+   retrieval date in `reference.py`. Nothing is recalled from memory or inferred.
+5. **It found something.** Two of the papers print a parameter that doesn't
+   reproduce their own results — see
    [What the replication found](#what-the-replication-found).
-6. **Authorship, plainly:** the health-economics modelling, methodological
-   decisions and validation design are mine; the software implementation was
+6. **Authorship, plainly.** The health-economics modelling, methodological
+   decisions, and validation design are mine; the software implementation was
    largely AI-generated under my direction and review.
 
 Companion to [GenomeLens](https://github.com/conallaque/genomelens) and to a
@@ -86,30 +87,29 @@ data/                    the one input file, with its provenance
 report.py                run this: prints published vs. computed, exits 1 on a miss
 ```
 
-**Reading it in five minutes:** [`report.py`](report.py) output is at the top of
-this page. Then any one `reference.py` — say
-[`heemod_dmhee_hiv/reference.py`](replications/heemod_dmhee_hiv/reference.py) —
-shows what a target looks like and where it came from. Then
+**Reading it in five minutes:** the [`report.py`](report.py) output is at the top
+of this page. Then open any one `reference.py` —
+[`heemod_dmhee_hiv/reference.py`](replications/heemod_dmhee_hiv/reference.py) is a
+good one — to see what a target looks like and where it came from. Then
 [`cstm/solver.py`](cstm/solver.py) is the engine all three run on.
 
 ---
 
 ## Why replication is the right test
 
-Every parameter in a portfolio health-economics model is, fairly, suspect. The
-reviewer's question is not "is the code elegant?" but "does it produce the right
-number?" — and that question is only answerable where a right number already
-exists.
+Every parameter in a portfolio health-economics model is fair game for suspicion.
+The question a reviewer actually cares about isn't "is the code elegant?" — it's
+"does it produce the right number?" And that's only answerable somewhere a right
+number already exists.
 
-So this repository does the one thing that answers it. Take a model whose results
-have been through peer review, rebuild it from the parameters the authors
-published, and compare. The result is binary and public: either the ICER lands on
-$72,988/QALY or it does not.
+So that's what this repo does. Take a model whose results have been peer
+reviewed, rebuild it from the parameters the authors published, and compare. The
+result is binary: either the ICER lands on $72,988/QALY or it doesn't.
 
-Three targets, because a solver that matches one paper may simply have been
-fitted to it — and two papers from the same group may share a house style. The
-third comes from a different tradition entirely, and disagrees with the first two
-on nearly every convention:
+I used three targets rather than one, because a solver that matches a single
+paper may just have been fitted to it — and two papers from the same group can
+share a house style. The third comes from a different tradition entirely, and
+disagrees with the first two on nearly every convention:
 
 | Convention | DARTH tutorials (2023) | DMHEE HIV model (2006/1997) |
 |---|---|---|
@@ -120,8 +120,8 @@ on nearly every convention:
 | Cycle counting | Simpson's 1/3 correction | **end-of-cycle, uncorrected** |
 | Currency / era | USD, contemporary | **GBP, 1996** |
 
-Matching all three is what makes the solver's generality a demonstrated property
-rather than a design intention.
+Matching all three is what makes the solver's generality something I can
+demonstrate rather than just assert.
 
 ## What is replicated
 
@@ -137,10 +137,10 @@ quality-of-life treatment (A), a progression-slowing treatment (B), and both (AB
 The third compares zidovudine monotherapy against zidovudine + lamivudine
 combination therapy in HIV, over 20 years.
 
-The HIV replication is **doubly anchored**: it matches the R package's printed
-output to the last decimal *and* the £6,276 per life-year reported in the clinical
-literature in 1997. Agreeing with both checks the whole chain — 1997 paper → 2006
-textbook → R package → this code — for drift at any link.
+The HIV replication is anchored twice over: it matches the R package's printed
+output to the last decimal, and the £6,276 per life-year reported in the clinical
+literature back in 1997. Agreeing with both means the whole chain checks out —
+1997 paper → 2006 textbook → R package → this code — with no drift at any link.
 
 ## What is in the engine
 
@@ -150,39 +150,39 @@ textbook → R package → this code — for drift at any link.
 | [`cstm/wcc.py`](cstm/wcc.py) | Within-cycle corrections (Simpson's 1/3, half-cycle) and the uncorrected counting conventions (beginning, end); rate → probability conversion; discount weights |
 | [`cstm/icer.py`](cstm/icer.py) | Efficient frontier, strong dominance, iterative extended dominance, ICERs against the correct comparator |
 
-Everything a published model varies is an argument, never a default. That is not
-generality for its own sake: a solver that hardcodes the half-cycle correction
-cannot reproduce a paper that used Simpson's rule, and will miss by a few percent
-while looking entirely reasonable.
+Anything a published model might vary is an argument, never a default. That's not
+generality for its own sake — a solver that hardcodes the half-cycle correction
+simply can't reproduce a paper that used Simpson's rule. It'll miss by a few
+percent and look completely reasonable while doing it.
 
 ## How "matching" is defined
 
-Loosely-defined agreement is how replication claims become unfalsifiable, so the
-rules are fixed in advance:
+Vague agreement is how replication claims turn unfalsifiable, so I fixed the
+rules in advance:
 
 - **Tolerance comes from the source, not from the result.** The DARTH papers
   print costs to the dollar and QALYs to three decimals; heemod prints costs to
   the penny and life-years to six figures. Each is asserted at its own printed
-  precision — not at whatever precision happened to be achieved.
-- **ICERs are checked too, and they are the strict test.** A published ICER is
-  computed from *unrounded* totals, so matching it implies the underlying values
+  precision — not at whatever precision I happened to hit.
+- **ICERs are checked too, and they're the strict test.** A published ICER is
+  computed from unrounded totals, so matching one implies the underlying values
   agree well past their printed precision.
-- **Dominance verdicts count as results.** Reproducing the costs while
-  misclassifying which strategy is dominated is not a replication.
-- **A target that does not match is cut, not excused.** All three here match
-  every value; if a future one does not, the honest options are to find the
-  structural reason or to drop it — never to widen the tolerance until it passes.
+- **Dominance verdicts count as results.** Reproducing the costs but
+  misclassifying which strategy is dominated isn't a replication.
+- **A target that doesn't match gets cut, not excused.** All three here match
+  every value. If a future one doesn't, the honest options are to find the
+  structural reason or drop it — never to widen the tolerance until it passes.
 
 This is a tighter bar than the face-validity check in the sibling toolkit, which
-asks only for the correct direction and order of magnitude against published
-ICERs. That check answers "is the engine sane?"; this repository answers "does it
-reproduce the literature?"
+only asks for the right direction and order of magnitude against published ICERs.
+That one answers "is the engine sane?"; this repo answers "does it reproduce the
+literature?"
 
 ## What the replication found
 
-Both DARTH papers' parameter tables print **$12,000** as the annual cost of
-treatment B. Both of the authors' analysis scripts use **$13,000**. Only $13,000
-reproduces the papers' own published results:
+Both DARTH papers print **$12,000** as the annual cost of treatment B in their
+parameter tables. Both of the authors' analysis scripts use **$13,000**. Only
+$13,000 reproduces the papers' own published results:
 
 | | Strategy B cost | ICER |
 |---|---|---|
@@ -193,44 +193,45 @@ reproduces the papers' own published results:
 | Replication at `c_trtB = 13,000` | **$202,536** ✓ | **$65,288** ✓ |
 | Replication at `c_trtB = 12,000` | $194,723 ✗ | $59,367 ✗ |
 
-So the results follow the code, and the printed parameter table is the outlier.
-The same mismatch appears in both papers, which points to one shared table rather
-than two independent typos.
+So the results follow the code, and the printed table is the outlier. The same
+mismatch shows up in both papers, which points to one shared table rather than two
+independent typos.
 
-This is minor and does not affect the tutorials' conclusions. It is worth
-recording anyway, for two reasons. It is the class of thing replication exists to
-catch — a reader who trusted the parameter table and rebuilt the model would miss
-the published ICER by 9% with no indication of why. And it is a reminder that
-"the paper says X" and "the paper's results were produced by X" are different
+This is minor and doesn't affect the tutorials' conclusions. I'm recording it
+anyway for two reasons. It's exactly the class of thing replication exists to
+catch — someone who trusted the parameter table and rebuilt the model would miss
+the published ICER by 9% with no indication of why. And it's a reminder that "the
+paper says X" and "the paper's results were produced by X" are two different
 claims.
 
-Both directions are asserted in [`tests/test_discrepancies.py`](tests/test_discrepancies.py):
-the code value reproduces the results, and the printed value provably does not.
-If the second assertion ever fails, this section is wrong and gets retracted.
+Both directions are asserted in
+[`tests/test_discrepancies.py`](tests/test_discrepancies.py): the code value
+reproduces the results, and the printed value provably doesn't. If that second
+assertion ever fails, this section is wrong and I'll retract it.
 
-> The papers' parameter tables were read by automated extraction of the PMC full
-> text on 2026-08-19. That is good enough to justify the test; anyone citing this
-> in writing should put a human eye on the PDFs first. The `13,000` side needs no
-> such caveat — it is in the authors' published source code, and it reproduces
-> eight printed values exactly.
+> The parameter tables were read by automated extraction of the PMC full text on
+> 2026-08-19. That's good enough to justify the test, but anyone citing this in
+> writing should put a human eye on the PDFs first. The $13,000 side needs no such
+> caveat — it's in the authors' published source code, and it reproduces eight
+> printed values exactly.
 
 ## Provenance
 
 Replication is worthless if the target numbers are wrong, so no value enters this
-repository from memory. Each `reference.py` records the exact URL and retrieval
-date for the results, the model source code, and any data file:
+repo from memory. Each `reference.py` records the exact URL and retrieval date for
+the results, the model source code, and any data file:
 
-- Published results: open-access full text on PubMed Central; the rendered CRAN
-  vignette for the heemod target
-- Model parameters: the authors' public analysis scripts and vignette sources,
-  transcribed with the original R variable name beside each Python constant. The
+- **Published results:** open-access full text on PubMed Central; the rendered
+  CRAN vignette for the heemod target
+- **Model parameters:** the authors' public analysis scripts and vignette sources,
+  transcribed with the original R variable name next to each Python constant. The
   heemod parameters were cross-checked against a second mirror of the vignette
-- Life table: `data/LifeTable_USA_Mx_2015.csv`, vendored unmodified from the
+- **Life table:** `data/LifeTable_USA_Mx_2015.csv`, vendored unmodified from the
   authors' repository so the replication runs offline
 
 Parameters live in `model.py` and targets live in `reference.py`, deliberately
-apart — so that no parameter can quietly drift toward the number it is supposed
-to predict.
+kept apart — so no parameter can quietly drift toward the number it's supposed to
+predict.
 
 ## Verifying the solver itself
 
@@ -252,37 +253,38 @@ HEOR_TOOLKIT_PATH=/path/to/heor-toolkit python3 -m pytest -q
 **The two payoff conventions collapse into each other when they should.** Given
 only state rewards, the transition-array formulation is provably identical to
 `trace @ rewards`. That identity is a sharp test of the array's cycle indexing —
-an off-by-one still produces plausible totals but breaks the identity at once. It
-caught exactly that bug during development, before any replication was run.
+an off-by-one still produces plausible-looking totals but breaks the identity
+immediately. It caught exactly that bug during development, before I'd run any
+replication.
 
 **The half-cycle correction is exactly the average of the two uncorrected
 conventions.** Counting the cohort at the start of each cycle overstates; counting
-at the end understates; the correction splits the difference. That is asserted as
-an identity rather than described, and it ties the DARTH and heemod conventions
+at the end understates; the correction splits the difference. I assert that as an
+identity rather than describing it, which ties the DARTH and heemod conventions
 into one framework instead of two special cases.
 
 ## Scope and limits
 
 - Deterministic cohort models only. No probabilistic sensitivity analysis, no
-  microsimulation, no state-residence (tunnel) models — the sibling toolkit
-  covers PSA, CEAC and EVPI.
+  microsimulation, no state-residence (tunnel) models — the sibling toolkit covers
+  PSA, CEAC, and EVPI.
 - Three replications, from two traditions and two languages' idioms. Small and
-  finished beats large and half-built; the structure is designed so a fourth is a
-  directory, not a refactor.
+  finished beats large and half-built, and the structure is set up so a fourth is
+  a new directory, not a refactor.
 - Effects are carried in the solver's QALY slot regardless of what the source
-  measures. For the HIV model those are undiscounted life-years; the label is the
-  replication's business, not the solver's.
+  actually measures. For the HIV model those are undiscounted life-years — the
+  label is the replication's business, not the solver's.
 - Teaching and portfolio code. Not a validated submission model, and not medical
   or financial advice.
 
 ## Licence
 
-**All rights reserved.** Read it, clone it, run the tests — evaluating the work
-is exactly what it is here for. Commercial use, redistribution and derivative
-works need written permission. Full terms in [`LICENSE`](LICENSE).
+**All rights reserved.** Read it, clone it, run the tests — evaluating the work is
+exactly what it's here for. Commercial use, redistribution, and derivative works
+need written permission. Full terms in [`LICENSE`](LICENSE).
 
 The replicated models and their published parameters belong to their authors and
-are cited in full in each `reference.py`; this repository contains an independent
+are cited in full in each `reference.py`; this repo contains an independent
 implementation, not their code. Third-party material redistributed here — the US
 life table — stays under its own MIT licence, unaffected by the above. See
 [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
