@@ -16,7 +16,7 @@ pip install -r requirements.txt && pytest -q      # 100 passed, 3 skipped
 python3 report.py                                 # the tables below, live
 ```
 
-The 3 skips are an optional cross-check against the sibling engine this solver
+The 3 skips are an optional cross-check against the earlier engine this solver
 generalises — see [Verifying the solver itself](#verifying-the-solver-itself).
 Everything backing the claim runs on a clean clone with no setup.
 
@@ -70,9 +70,8 @@ Combination therapy          50,601.65       50,601.65           8.937389       
    decisions, and validation design are mine; the software implementation was
    largely AI-generated under my direction and review.
 
-Companion to [GenomeLens](https://github.com/conallaque/genomelens) and to a
-sibling HEOR toolkit (not currently public). Those build models; this one checks
-that the machinery agrees with the literature.
+Companion to [GenomeLens](https://github.com/conallaque/genomelens), which builds
+models; this one checks that the machinery agrees with the literature.
 
 ### Where to look
 
@@ -138,8 +137,8 @@ The third compares zidovudine monotherapy against zidovudine + lamivudine
 combination therapy in HIV, over 20 years.
 
 The HIV replication is anchored twice over: it matches the R package's printed
-output to the last decimal, and the £6,276 per life-year reported in the clinical
-literature back in 1997. Agreeing with both means the whole chain checks out —
+output to the last decimal, and the £6,276 (~$9,800 at 1996 exchange rates) per
+life-year reported in the clinical literature back in 1997. Agreeing with both means the whole chain checks out —
 1997 paper → 2006 textbook → R package → this code — with no drift at any link.
 
 ## What is in the engine
@@ -149,6 +148,7 @@ literature back in 1997. Agreeing with both means the whole chain checks out —
 | [`cstm/solver.py`](cstm/solver.py) | General N-state cohort state-transition solver — arbitrary state count, time-varying transition arrays, time-varying rewards, state and transition rewards, two payoff conventions, per-cycle matrix validation |
 | [`cstm/wcc.py`](cstm/wcc.py) | Within-cycle corrections (Simpson's 1/3, half-cycle) and the uncorrected counting conventions (beginning, end); rate → probability conversion; discount weights |
 | [`cstm/icer.py`](cstm/icer.py) | Efficient frontier, strong dominance, iterative extended dominance, ICERs against the correct comparator |
+| [`cstm/psa.py`](cstm/psa.py) | Probabilistic sensitivity analysis (PSA), cost-effectiveness acceptability curves (CEAC), expected value of perfect information (EVPI), correlated baseline sampling, confidence-graded beta concentrations |
 
 Anything a published model might vary is an argument, never a default. That's not
 generality for its own sake — a solver that hardcodes the half-cycle correction
@@ -173,10 +173,9 @@ rules in advance:
   every value. If a future one doesn't, the honest options are to find the
   structural reason or drop it — never to widen the tolerance until it passes.
 
-This is a tighter bar than the face-validity check in the sibling toolkit, which
-only asks for the right direction and order of magnitude against published ICERs.
-That one answers "is the engine sane?"; this repo answers "does it reproduce the
-literature?"
+This is a tighter bar than a face-validity check, which only asks for the right
+direction and order of magnitude against published ICERs. That answers "is the
+engine sane?"; this repo answers "does it reproduce the literature?"
 
 ## What the replication found
 
@@ -261,8 +260,8 @@ Three checks stand behind the solver independently of any single paper.
 
 **It still agrees with the engine it generalises.**
 [`tests/test_solver_equivalence.py`](tests/test_solver_equivalence.py) runs the
-solver against the 3-state Markov engine it grew out of (a sibling HEOR toolkit,
-not currently public) and reproduces its totals to the full precision that engine
+solver against the 3-state Markov engine it grew out of and reproduces its totals
+to the full precision that engine
 reports. That separates the two failure modes: if the equivalence check is green
 and a replication still misses, the fault is in the replication's parameters, not
 the solver. These are the 3 tests that skip on a clean clone; to run them, point
@@ -287,9 +286,10 @@ into one framework instead of two special cases.
 
 ## Scope and limits
 
-- Deterministic cohort models only. No probabilistic sensitivity analysis, no
-  microsimulation, no state-residence (tunnel) models — the sibling toolkit covers
-  PSA, CEAC, and EVPI.
+- Cohort models only — no microsimulation, no state-residence (tunnel) models.
+  PSA, CEAC, and EVPI are now built in (`cstm/psa.py`), with correlated baseline
+  QALY sampling, shared cost-environment multipliers, and confidence-graded beta
+  concentrations.
 - Three replications, from two traditions and two languages' idioms. Small and
   finished beats large and half-built, and the structure is set up so a fourth is
   a new directory, not a refactor.
